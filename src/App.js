@@ -1,72 +1,87 @@
 import React, { useState } from "react";
-import logo from "./logo.svg";
 import "./App.css";
-import MovieCard from "./components/MovieCard";
 import Button from "./components/Button";
+import MovieCard from "./components/MovieCard";
+import { movies } from "./const";
+
+// We will have to initalize a state with the movies array
+// Create a state to keep track of the forms values
+// When the form is submited, we take this data and add it to the
+// movies array
 
 function App() {
-  const [counter, setCounter] = useState(0);
-  const [increamentValue, setIncreamentValue] = useState(1);
-  const [showMainText, setShowMainText] = useState(false);
+  const [newMovieInput, setNewMovieInput] = useState({});
+  const [moviesList, setMoviesList] = useState(movies);
 
-  const increaseCounter = () => {
-    setCounter(counter + increamentValue);
+  const handleOnChange = (event) => {
+    const keyName = event.target.name;
+    const value = event.target.value;
+    setNewMovieInput((prev) => {
+      // Copy the previous object (state) and only change the keyName that I want
+      // prev is aka newMovieInput
+      return { ...prev, [keyName]: value };
+    });
   };
 
-  const decreaseCounter = () => {
-    if (counter - increamentValue < 0) {
-      return;
-    }
-    if (counter > 0) {
-      setCounter(counter - increamentValue);
-    }
-  };
-
-  const handleInputChange = (e) => {
-    setIncreamentValue(parseInt(e.target.value));
-  };
-
-  const handleMainText = () => {
-    setShowMainText(!showMainText);
+  const handleSubmit = (event) => {
+    event.preventDefault();
+    setMoviesList((prev) => {
+      return [newMovieInput, ...prev];
+    });
+    // Clear the form
+    setNewMovieInput({
+      title: "",
+      year: "",
+      director: "",
+      rate: "",
+    });
   };
 
   return (
     <div className="App">
       <header className="App-header">
-        {showMainText ? (
-          <p onClick={() => console.log("YOU CLICKED ON ME")}>
-            HELLO WELCOME TO YOUR Second lesson OF REACT.
-          </p>
-        ) : (
-          <p>:( the main text is hidden</p>
-        )}
-        <h2>REACT useState</h2>
-        <p>Counter: {counter}</p>
-        <Button text="Increment" onClick={increaseCounter} />
-        <input
-          type="number"
-          placeholder="Increament value"
-          onChange={handleInputChange}
-        />
-        {counter > 10 && <h2>Congrats your counter has passed 10</h2>}
-        <Button text="Decreament" onClick={decreaseCounter} />
-        <Button
-          text={showMainText ? "Hide Main Text" : "Show main text"}
-          onClick={handleMainText}
-        />
-        {/* {movies.map((movie) => {
+        <form
+          style={{
+            display: "flex",
+            flexDirection: "column",
+            marginTop: "20px",
+            width: "500px",
+          }}
+          onSubmit={handleSubmit}
+        >
+          <input
+            type="text"
+            placeholder="Movie Name"
+            name="title"
+            value={newMovieInput.title}
+            onChange={handleOnChange}
+          />
+          <input
+            type="text"
+            placeholder="Movie Year"
+            name="year"
+            value={newMovieInput.year}
+            onChange={handleOnChange}
+          />
+          <input
+            type="text"
+            placeholder="Movie Director"
+            name="director"
+            value={newMovieInput.director}
+            onChange={handleOnChange}
+          />
+          <input
+            type="number"
+            placeholder="Movie Rate"
+            name="rate"
+            value={newMovieInput.rate}
+            onChange={handleOnChange}
+          />
+          <Button type="submit" text={"Add new Movie"} />
+        </form>
+        {moviesList.map((movie) => {
           return <MovieCard {...movie} />;
         })}
-        <Button link="localhost3000" text="Hello there" color="red" /> */}
-
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
       </header>
     </div>
   );
