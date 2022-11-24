@@ -1,73 +1,47 @@
-import React, { useState } from "react";
-import logo from "./logo.svg";
+import React, { useState, useEffect } from "react";
 import "./App.css";
 import MovieCard from "./components/MovieCard";
 import Button from "./components/Button";
 
 function App() {
-  const [counter, setCounter] = useState(0);
-  const [increamentValue, setIncreamentValue] = useState(1);
-  const [showMainText, setShowMainText] = useState(false);
-
-  const increaseCounter = () => {
-    setCounter(counter + increamentValue);
+  const [listName, setListName] = useState("now_playing");
+  const [movies, setMovies] = useState([]);
+  // const [time, setTime] = useState(0);
+  const listNames = ["popular", "top_rated", "now_playing"];
+  const handleClick = (e) => {
+    setListName(e.target.text);
   };
 
-  const decreaseCounter = () => {
-    if (counter - increamentValue < 0) {
-      return;
-    }
-    if (counter > 0) {
-      setCounter(counter - increamentValue);
-    }
+  const fecthMovies = async (param) => {
+    const res = await fetch(
+      `https://api.themoviedb.org/3/movie/${param}?api_key=542003918769df50083a13c415bbc602`
+    );
+    const data = await res.json();
+    console.log(data);
+    setMovies(data.results);
   };
 
-  const handleInputChange = (e) => {
-    setIncreamentValue(parseInt(e.target.value));
-  };
+  // setTimeout(() => setListName("top_rated"), 5000);
 
-  const handleMainText = () => {
-    setShowMainText(!showMainText);
-  };
+  useEffect(() => {
+    setTimeout(() => fecthMovies(listName), 5000);
+  }, [listName]);
+
+  console.log("render outside", listName);
+
+  if (!!movies.length <= 0) {
+    return <h2>...Loading</h2>;
+  }
 
   return (
     <div className="App">
-      <header className="App-header">
-        {showMainText ? (
-          <p onClick={() => console.log("YOU CLICKED ON ME")}>
-            HELLO WELCOME TO YOUR Second lesson OF REACT.
-          </p>
-        ) : (
-          <p>:( the main text is hidden</p>
-        )}
-        <h2>REACT useState</h2>
-        <p>Counter: {counter}</p>
-        <Button text="Increment" onClick={increaseCounter} />
-        <input
-          type="number"
-          placeholder="Increament value"
-          onChange={handleInputChange}
-        />
-        {counter > 10 && <h2>Congrats your counter has passed 10</h2>}
-        <Button text="Decreament" onClick={decreaseCounter} />
-        <Button
-          text={showMainText ? "Hide Main Text" : "Show main text"}
-          onClick={handleMainText}
-        />
-        {/* {movies.map((movie) => {
-          return <MovieCard {...movie} />;
-        })}
-        <Button link="localhost3000" text="Hello there" color="red" /> */}
-
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+      <h2>Movie App</h2>
+      <div>
+        {listNames.map((listName) => (
+          <Button text={listName} onClick={handleClick} />
+        ))}
+      </div>
+      <div>{movies && movies.map((movie) => <MovieCard {...movie} />)}</div>
     </div>
   );
 }

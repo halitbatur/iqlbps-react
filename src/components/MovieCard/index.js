@@ -1,21 +1,19 @@
 import React from "react";
+
 import Button from "../Button";
+import "./style.css";
 
 const MovieCard = (props) => {
-  console.log(props, "PROPS");
   return (
-    <div>
+    <div className="movieCard">
       <h3>{props.title}</h3>
-      <h4>Directed by: {props.director}</h4>
-      <p>Produced at : {props.year}</p>
-      <p>Genres:</p>
-      <ul>
-        {props.genre.map((genre) => {
-          return <li>{genre}</li>;
-        })}
-      </ul>
-      <p>Rating:{props.rate}</p>
-      <Button link={props.link} text={props.title} color={props.buttonColor} />
+      <div>
+        <img
+          src={`http://image.tmdb.org/t/p/w780${props.poster_path}`}
+          alt={props.title}
+        />
+      </div>
+      <p>Overview: {props.overview}</p>
     </div>
   );
 };
