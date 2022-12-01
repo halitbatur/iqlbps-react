@@ -6,7 +6,7 @@ const MovieCard = (props) => {
       <h3>{props.title}</h3>
       <h4>Directed by: {props.director}</h4>
       <p>Produced at : {props.year}</p>
-      <p>Rating:{props.rate}</p>
+      <p>Rating:{props.rating}</p>
     </div>
   );
 };
